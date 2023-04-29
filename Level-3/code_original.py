@@ -24,7 +24,7 @@ class TaxPayer:
             pass
         
         # defends against path traversal attacks
-        if path.startswith('/') or path.startswith('..') or path.startswith('./'):
+        if path.startswith('/') or path.startswith('..'):
             return None
         
         # builds path
@@ -37,26 +37,15 @@ class TaxPayer:
         # assume that image is returned on screen after this
         return prof_picture_path
 
-    def safe_path(self, path):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        filepath = os.path.normpath(os.path.join(base_dir, path))
-        if base_dir != os.path.commonpath([base_dir, filepath]):
-            return None
-        return filepath
-
     # returns the path of an attached tax form that every user should submit
     def get_tax_form_attachment(self, path=None):
         tax_data = None
         
         if not path:
             raise Exception("Error: Tax form is required for all users")
-        else:
-            if self.safe_path(path) != None:
-                with open(path, 'rb') as form:
-                    tax_data = bytearray(form.read())
-            else:
-                return None
+       
+        with open(path, 'rb') as form:
+            tax_data = bytearray(form.read())
 
         # assume that taxa data is returned on screen after this
         return path
-    
